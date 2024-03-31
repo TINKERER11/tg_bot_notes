@@ -31,7 +31,7 @@ def create_databases() -> None:
     with conn.cursor() as cursor:
         cursor.execute("""
     CREATE TABLE IF NOT EXISTS notes (
-    	    user_id integer NOT NULL,
+    	    user_id BIGINT NOT NULL,
     	    note_id serial,
     	    note varchar(20000) NOT NULL
         );""")
