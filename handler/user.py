@@ -50,8 +50,13 @@ def st(message: telebot.types.Message):
 
 @bot.message_handler(commands=['delete_note'])
 def delete(message: telebot.types.Message):
-    bot.send_message(message.from_user.id, "Напишите номер заметки, которую хотите удалить")
-    bot.set_state(message.from_user.id, UserState.note_id, message.chat.id)
+    user_id = int(message.from_user.id)
+    notes = get_books_from_db(user_id)
+    if len(notes) == 0:
+        bot.send_message(message.from_user.id, "Заметок нет")
+    else:
+        bot.send_message(message.from_user.id, "Напишите номер заметки, которую хотите удалить")
+        bot.set_state(message.from_user.id, UserState.note_id, message.chat.id)
 
 
 @bot.message_handler(state=UserState.note_id)
