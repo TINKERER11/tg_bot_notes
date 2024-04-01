@@ -53,7 +53,7 @@ def save_data(id: int, s: str):
     conn.close()
 
 
-def delete_data(note_id: int, user_id):
+def delete_data(note_id: int, user_id: int):
     conn = psycopg2.connect(
         host="localhost",
         port=5432,
