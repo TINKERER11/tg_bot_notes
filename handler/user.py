@@ -1,7 +1,7 @@
 import telebot
 import random
 
-from funcs.db import get_books_from_db, save_data, delete_data
+from funcs.db import get_books_from_db, save_data, delete_data, prov_1
 from init_bot import bot
 
 
@@ -28,7 +28,7 @@ def get_book(message: telebot.types.Message):
     else:
         for i in range(len(books)):
             bot.send_message(message.chat.id, f"Заметка {books[i][1]}\n"
-                                            f"{books[i][2]}")
+                                              f"{books[i][2]}")
             print(books[i])
 
 
@@ -66,8 +66,9 @@ def state1(message: telebot.types.Message):
         bot.set_state(message.from_user.id, UserState.note_id, message.chat.id)
     else:
         user_id = int(message.from_user.id)
-        if get_books_from_db(user_id) == []:
-            bot.send_message(message.from_user.id, "Удалять нечего")
+        if len(prov_1(note_id, user_id)) == 0:
+            bot.send_message(message.from_user.id, "Заметка не найдена")
+            bot.delete_state(message.from_user.id, message.chat.id)
         else:
             delete_data(note_id, user_id)
             bot.delete_state(message.from_user.id, message.chat.id)

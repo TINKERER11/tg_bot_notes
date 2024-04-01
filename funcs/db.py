@@ -1,7 +1,7 @@
 import psycopg2
 
 
-def get_books_from_db(note_id: int) -> list:
+def get_books_from_db(user_id: int) -> list:
     conn = psycopg2.connect(
         host="localhost",
         port=5432,
@@ -10,7 +10,7 @@ def get_books_from_db(note_id: int) -> list:
         dbname="mydb"
     )
     with conn.cursor() as cursor:
-        cursor.execute("SELECT * FROM notes WHERE user_id = (%s);", (note_id, ))
+        cursor.execute("SELECT * FROM notes WHERE user_id = (%s);", (user_id, ))
         result = cursor.fetchall()
         print(result)
     conn.commit()
@@ -31,7 +31,7 @@ def create_databases() -> None:
     with conn.cursor() as cursor:
         cursor.execute("""
     CREATE TABLE IF NOT EXISTS notes (
-    	    user_id integer NOT NULL,
+    	    user_id BIGINT NOT NULL,
     	    note_id serial,
     	    note varchar(20000) NOT NULL
         );""")
@@ -65,6 +65,23 @@ def delete_data(note_id: int, user_id):
         cursor.execute("DELETE FROM notes WHERE note_id = (%s) AND user_id = (%s);", (note_id, user_id))
     conn.commit()
     conn.close()
+
+
+def prov_1(note_id: int, user_id: int) -> list:
+    conn = psycopg2.connect(
+        host="localhost",
+        port=5432,
+        user="postgres",
+        password="yfhmzy03",
+        dbname="mydb"
+    )
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT * FROM notes WHERE note_id = (%s) AND user_id = (%s);", (note_id, user_id))
+        result = cursor.fetchall()
+        print(result)
+    conn.commit()
+    conn.close()
+    return result
 
 
 if __name__ == "__main__":
