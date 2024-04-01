@@ -22,14 +22,14 @@ def start(message: telebot.types.Message):
 @bot.message_handler(commands=['get_notes'])
 def get_book(message: telebot.types.Message):
     user_id = int(message.from_user.id)
-    books = get_books_from_db(user_id)
-    if books == []:
+    notes = get_books_from_db(user_id)
+    if len(notes) == 0:
         bot.send_message(message.from_user.id, "Заметок нет")
     else:
-        for i in range(len(books)):
-            bot.send_message(message.chat.id, f"Заметка {books[i][1]}\n"
-                                              f"{books[i][2]}")
-            print(books[i])
+        for i in range(len(notes)):
+            bot.send_message(message.chat.id, f"Заметка {notes[i][1]}\n"
+                                              f"{notes[i][2]}")
+            #print(notes[i])
 
 
 @bot.message_handler(commands=['add_note'])
