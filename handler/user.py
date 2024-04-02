@@ -34,6 +34,7 @@ def get_book(message: telebot.types.Message):
 
 @bot.message_handler(commands=['add_note'])
 def pr(message: telebot.types.Message):
+    bot.send_message(message.from_user.id, "Напишите что-нибудь...")
     bot.set_state(message.from_user.id, UserState.note, message.chat.id)
 
 
