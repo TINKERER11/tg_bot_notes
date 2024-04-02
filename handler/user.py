@@ -72,14 +72,9 @@ def state1(message: telebot.types.Message):
         bot.send_message(message.from_user.id, "Вы ввели не число!")
         bot.set_state(message.from_user.id, UserState.note_id, message.chat.id)
     else:
-        try:
-            if len(prov_1(notes[note_id - 1][1], user_id)) == 0:
-                bot.send_message(message.from_user.id, "Заметка не найдена")
-                bot.delete_state(message.from_user.id, message.chat.id)
-        except IndexError:
-            bot.delete_state(message.from_user.id, message.chat.id)
+        if note_id <= 0 or len(notes) < note_id or len(prov_1(notes[note_id - 1][1], user_id)) == 0:
             bot.send_message(message.from_user.id, "Заметка не найдена")
-            bot.set_state(message.from_user.id, UserState.note_id, message.chat.id)
+            bot.delete_state(message.from_user.id, message.chat.id)
         else:
             delete_data(notes[note_id - 1][1], user_id)
             bot.delete_state(message.from_user.id, message.chat.id)
