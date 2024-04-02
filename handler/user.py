@@ -27,7 +27,7 @@ def get_book(message: telebot.types.Message):
         bot.send_message(message.from_user.id, "Заметок нет")
     else:
         for i in range(len(notes)):
-            bot.send_message(message.chat.id, f"Заметка {notes[i][1]}\n"
+            bot.send_message(message.chat.id, f"Заметка {i + 1}\n"
                                               f"{notes[i][2]}")
             #print(notes[i])
 
@@ -61,21 +61,27 @@ def delete(message: telebot.types.Message):
 
 @bot.message_handler(state=UserState.note_id)
 def state1(message: telebot.types.Message):
+    user_id = int(message.from_user.id)
+    notes = get_books_from_db(user_id)
     with bot.retrieve_data(message.from_user.id) as data:
         data['note_id'] = message.text
     try:
         note_id = int(data['note_id'])
-    except Exception:
+    except ValueError:
         bot.delete_state(message.from_user.id, message.chat.id)
         bot.send_message(message.from_user.id, "Вы ввели не число!")
         bot.set_state(message.from_user.id, UserState.note_id, message.chat.id)
     else:
-        user_id = int(message.from_user.id)
-        if len(prov_1(note_id, user_id)) == 0:
-            bot.send_message(message.from_user.id, "Заметка не найдена")
+        try:
+            if len(prov_1(notes[note_id - 1][1], user_id)) == 0:
+                bot.send_message(message.from_user.id, "Заметка не найдена")
+                bot.delete_state(message.from_user.id, message.chat.id)
+        except IndexError:
             bot.delete_state(message.from_user.id, message.chat.id)
+            bot.send_message(message.from_user.id, "Заметка не найдена")
+            bot.set_state(message.from_user.id, UserState.note_id, message.chat.id)
         else:
-            delete_data(note_id, user_id)
+            delete_data(notes[note_id - 1][1], user_id)
             bot.delete_state(message.from_user.id, message.chat.id)
             bot.send_message(message.from_user.id, f"Заметка {note_id} удалена")
 
